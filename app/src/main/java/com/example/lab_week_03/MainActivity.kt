@@ -11,11 +11,25 @@ class MainActivity : AppCompatActivity(), CoffeeListener {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        // Tampilkan ListFragment saat activity pertama kali dibuat
+        if (savedInstanceState == null) {
+            val listFragment = ListFragment()
+            supportFragmentManager.beginTransaction()
+                .add(R.id.fragment_container, listFragment)
+                .commit()
+        }
     }
 
     override fun onSelected(id: Int) {
-        val detailFragment =
-            supportFragmentManager.findFragmentById(R.id.fragment_detail) as? DetailFragment
-        detailFragment?.setCoffeeData(id)
+        // Buat instance DetailFragment menggunakan newInstance
+        val detailFragment = DetailFragment.newInstance(id)
+
+        // Ganti ListFragment dengan DetailFragment
+        supportFragmentManager.beginTransaction()
+            .replace(R.id.fragment_container, detailFragment)
+            // Tambahkan transaksi ini ke back stack agar bisa kembali
+            .addToBackStack(null)
+            .commit()
     }
 }
